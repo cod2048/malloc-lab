@@ -57,15 +57,15 @@ void mem_reset_brk()
  */
 void *mem_sbrk(int incr) 
 {
-    char *old_brk = mem_brk;
+    char *old_brk = mem_brk; // old_brk에 현재 힙의 break값(끝 값) 저장
 
-    if ( (incr < 0) || ((mem_brk + incr) > mem_max_addr)) {
-	errno = ENOMEM;
-	fprintf(stderr, "ERROR: mem_sbrk failed. Ran out of memory...\n");
-	return (void *)-1;
+    if ( (incr < 0) || ((mem_brk + incr) > mem_max_addr)) { //들어온 값이 음수이거나, 힙의 break값에 들어온 값을 더한 값이 힙의 최댓값보다 크면
+	errno = ENOMEM; // 에러 번호를 ENOMEM(메모리 부족)으로 설정
+	fprintf(stderr, "ERROR: mem_sbrk failed. Ran out of memory...\n"); // 오류 메시지 출력
+	return (void *)-1; // -1을 가리키는 포인터 반환
     }
-    mem_brk += incr;
-    return (void *)old_brk;
+    mem_brk += incr; // 현재 break주소를 증가값만큼 증가시킴
+    return (void *)old_brk; // 이전 break주소를 가리키는 포인터 반환(뭔가 실패했을 때 원래 주소로 돌아가야하기 때문)
 }
 
 /*
